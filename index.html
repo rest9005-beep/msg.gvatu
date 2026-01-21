@@ -7,8 +7,28 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Добавим временные стили для отладки */
+        * {
+            outline: 1px solid rgba(255, 0, 0, 0.1) !important;
+        }
+        
+        .debug {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: white;
+            color: black;
+            padding: 10px;
+            z-index: 9999;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
 </head>
 <body>
+    <div class="debug" id="debug">Загрузка...</div>
+    
     <!-- СТРАНИЦА АВТОРИЗАЦИИ -->
     <div class="auth-container" id="auth-container">
         <div class="auth-box">
@@ -86,7 +106,7 @@
     </div>
 
     <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
-    <div class="app-container" id="app-container">
+    <div class="app-container" id="app-container" style="display: none;">
         <div class="app-content">
             <!-- ЛЕВАЯ ПАНЕЛЬ -->
             <div class="left-nav">
@@ -97,10 +117,7 @@
                 <div class="nav-user">
                     <div class="user-profile">
                         <div class="user-avatar editable" id="current-user-avatar">
-                            <label for="avatar-upload-main" class="avatar-upload-label">
-                                <i class="fas fa-user"></i>
-                            </label>
-                            <input type="file" id="avatar-upload-main" accept="image/*" style="display: none;">
+                            Я
                         </div>
                         <div class="user-info">
                             <div class="user-name" id="current-user-name">Загрузка...</div>
@@ -160,11 +177,15 @@
                     <div class="page active" id="chats-page">
                         <div class="search-box" id="chats-search-box" style="display: none;">
                             <input type="text" class="search-input" id="chats-search" 
-                                   placeholder="Поиск чатов..." data-search-type="chats">
+                                   placeholder="Поиск чатов...">
                             <i class="fas fa-search search-icon"></i>
                         </div>
                         <div class="chats-grid" id="chats-list">
-                            <!-- Чаты будут загружаться динамически -->
+                            <div class="empty-state">
+                                <i class="fas fa-comment"></i>
+                                <h3>Нет чатов</h3>
+                                <p>Начните общение, создав новый чат</p>
+                            </div>
                         </div>
                     </div>
 
@@ -172,21 +193,29 @@
                     <div class="page" id="contacts-page">
                         <div class="search-box">
                             <input type="text" class="search-input" id="contacts-search" 
-                                   placeholder="Поиск по имени или юзернейму..." data-search-type="contacts">
+                                   placeholder="Поиск по имени или юзернейму...">
                             <i class="fas fa-search search-icon"></i>
                         </div>
                         
                         <div class="contacts-section">
                             <div class="section-title">Мои контакты</div>
                             <div class="contacts-list" id="contacts-list">
-                                <!-- Контакты будут загружаться динамически -->
+                                <div class="empty-state">
+                                    <i class="fas fa-users"></i>
+                                    <h3>Нет контактов</h3>
+                                    <p>Добавьте друзей, чтобы начать общение</p>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="contacts-section">
                             <div class="section-title">Найти пользователей</div>
                             <div class="contacts-list" id="users-list">
-                                <!-- Пользователи для добавления -->
+                                <div class="empty-state">
+                                    <i class="fas fa-search"></i>
+                                    <h3>Начните поиск</h3>
+                                    <p>Введите имя или юзернейм в поле выше</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,21 +232,33 @@
                             <!-- ВКЛАДКА ЗАЯВОК -->
                             <div class="friends-tab-content active" id="requests-tab">
                                 <div class="requests-list" id="requests-list">
-                                    <!-- Заявки будут загружаться динамически -->
+                                    <div class="empty-state">
+                                        <i class="fas fa-envelope"></i>
+                                        <h3>Нет заявок</h3>
+                                        <p>У вас нет входящих заявок в друзья</p>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- ВКЛАДКА ДРУЗЕЙ -->
                             <div class="friends-tab-content" id="friends-tab">
                                 <div class="contacts-list" id="friends-list">
-                                    <!-- Друзья будут загружаться динамически -->
+                                    <div class="empty-state">
+                                        <i class="fas fa-user-friends"></i>
+                                        <h3>Нет друзей</h3>
+                                        <p>Добавьте друзей, чтобы видеть их здесь</p>
+                                    </div>
                                 </div>
                             </div>
                             
                             <!-- ВКЛАДКА ОТПРАВЛЕННЫХ -->
                             <div class="friends-tab-content" id="sent-tab">
                                 <div class="requests-list" id="sent-requests-list">
-                                    <!-- Отправленные заявки -->
+                                    <div class="empty-state">
+                                        <i class="fas fa-paper-plane"></i>
+                                        <h3>Нет отправленных заявок</h3>
+                                        <p>Вы пока не отправили ни одной заявки</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -231,10 +272,6 @@
                                     <i class="fas fa-user"></i>
                                     <span>Профиль</span>
                                 </a>
-                                <a href="#" class="settings-nav-item" data-section="avatar">
-                                    <i class="fas fa-image"></i>
-                                    <span>Аватар</span>
-                                </a>
                                 <a href="#" class="settings-nav-item" data-section="privacy">
                                     <i class="fas fa-lock"></i>
                                     <span>Приватность</span>
@@ -242,14 +279,6 @@
                                 <a href="#" class="settings-nav-item" data-section="security">
                                     <i class="fas fa-shield-alt"></i>
                                     <span>Безопасность</span>
-                                </a>
-                                <a href="#" class="settings-nav-item" data-section="notifications">
-                                    <i class="fas fa-bell"></i>
-                                    <span>Уведомления</span>
-                                </a>
-                                <a href="#" class="settings-nav-item" data-section="appearance">
-                                    <i class="fas fa-palette"></i>
-                                    <span>Внешний вид</span>
                                 </a>
                             </div>
                             
@@ -282,27 +311,6 @@
                                     </form>
                                 </div>
                                 
-                                <!-- РАЗДЕЛ АВАТАРА -->
-                                <div class="settings-section" id="avatar-section">
-                                    <div class="settings-title">Аватар</div>
-                                    <div class="avatar-upload" id="avatar-upload-container">
-                                        <label for="avatar-upload" class="avatar-upload-label">
-                                            <div class="avatar-preview" id="avatar-preview">
-                                                <!-- Превью аватара -->
-                                            </div>
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                            <span>Нажмите для загрузки аватара</span>
-                                            <small>Поддерживаемые форматы: JPG, PNG (макс. 5MB)</small>
-                                        </label>
-                                        <input type="file" id="avatar-upload" accept="image/*">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn btn-danger" id="remove-avatar">
-                                            <i class="fas fa-trash"></i> Удалить аватар
-                                        </button>
-                                    </div>
-                                </div>
-                                
                                 <!-- РАЗДЕЛ ПРИВАТНОСТИ -->
                                 <div class="settings-section" id="privacy-section">
                                     <div class="settings-title">Приватность</div>
@@ -320,7 +328,7 @@
                                             <label class="form-label">
                                                 <span>Показывать статус онлайн</span>
                                                 <label class="switch">
-                                                    <input type="checkbox" id="privacy-online">
+                                                    <input type="checkbox" id="privacy-online" checked>
                                                     <span class="slider"></span>
                                                 </label>
                                             </label>
@@ -330,7 +338,7 @@
                                             <label class="form-label">
                                                 <span>Разрешать заявки в друзья</span>
                                                 <label class="switch">
-                                                    <input type="checkbox" id="privacy-friend-requests">
+                                                    <input type="checkbox" id="privacy-friend-requests" checked>
                                                     <span class="slider"></span>
                                                 </label>
                                             </label>
@@ -345,17 +353,7 @@
                                             </select>
                                         </div>
                                         
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <span>Показывать время последнего посещения</span>
-                                                <label class="switch">
-                                                    <input type="checkbox" id="privacy-last-seen">
-                                                    <span class="slider"></span>
-                                                </label>
-                                            </label>
-                                        </div>
-                                        
-                                        <button type="button" class="btn btn-primary" onclick="savePrivacySettings()">
+                                        <button type="button" class="btn btn-primary" id="save-privacy">
                                             <i class="fas fa-lock"></i> Сохранить настройки приватности
                                         </button>
                                     </form>
@@ -388,70 +386,6 @@
                                         </button>
                                     </form>
                                 </div>
-                                
-                                <!-- ОСТАЛЬНЫЕ РАЗДЕЛЫ -->
-                                <div class="settings-section" id="notifications-section">
-                                    <div class="settings-title">Уведомления</div>
-                                    <form class="settings-form">
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <span>Уведомления о сообщениях</span>
-                                                <label class="switch">
-                                                    <input type="checkbox" id="notify-messages" checked>
-                                                    <span class="slider"></span>
-                                                </label>
-                                            </label>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <span>Уведомления о заявках в друзья</span>
-                                                <label class="switch">
-                                                    <input type="checkbox" id="notify-friend-requests" checked>
-                                                    <span class="slider"></span>
-                                                </label>
-                                            </label>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <span>Звуковые уведомления</span>
-                                                <label class="switch">
-                                                    <input type="checkbox" id="notify-sounds" checked>
-                                                    <span class="slider"></span>
-                                                </label>
-                                            </label>
-                                        </div>
-                                    </form>
-                                </div>
-                                
-                                <div class="settings-section" id="appearance-section">
-                                    <div class="settings-title">Внешний вид</div>
-                                    <form class="settings-form">
-                                        <div class="form-group">
-                                            <label class="form-label">Тема оформления</label>
-                                            <select class="form-input" id="theme-select">
-                                                <option value="dark">Темная</option>
-                                                <option value="light">Светлая</option>
-                                                <option value="auto">Авто (системная)</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div class="form-group">
-                                            <label class="form-label">
-                                                <span>Компактный режим</span>
-                                                <label class="switch">
-                                                    <input type="checkbox" id="compact-mode">
-                                                    <span class="slider"></span>
-                                                </label>
-                                            </label>
-                                        </div>
-                                        
-                                        <button type="button" class="btn btn-primary">
-                                            <i class="fas fa-save"></i> Применить настройки
-                                        </button>
-                                    </form>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -460,46 +394,651 @@
         </div>
     </div>
 
-    <!-- МОДАЛЬНОЕ ОКНО НОВОГО ЧАТА -->
-    <div class="modal-overlay" id="new-chat-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title">Новый чат</div>
-                <button class="modal-close" id="close-new-chat">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Выберите пользователя</label>
-                    <input type="text" class="form-input" id="chat-user-search" 
-                           placeholder="Поиск по имени или юзернейму">
-                </div>
+    <!-- УВЕДОМЛЕНИЯ -->
+    <div id="notification-container"></div>
+
+    <script>
+        // БАЗОВАЯ ФУНКЦИОНАЛЬНОСТЬ - РАБОТАЕТ БЕЗ ВНЕШНЕГО ФАЙЛА
+        document.getElementById('debug').textContent = 'Скрипт загружен';
+        
+        // Хранение данных
+        let currentUser = null;
+        let allUsers = {};
+        let allChats = {};
+        let friendRequests = [];
+        
+        // ДЕМО ДАННЫЕ
+        function createDemoUsers() {
+            const demoUsers = [
+                {name: 'Алексей Волков', username: 'alex.volkov', password: '123456'},
+                {name: 'Мария Смирнова', username: 'maria.s', password: '123456'},
+                {name: 'Дмитрий Попов', username: 'dmitry_p', password: '123456'}
+            ];
+            
+            demoUsers.forEach(userData => {
+                allUsers[userData.username] = {
+                    ...userData,
+                    bio: `${userData.name} пользуется ConnectFlow`,
+                    avatar: userData.name.charAt(0),
+                    friends: [],
+                    friendRequests: [],
+                    sentRequests: [],
+                    privacySettings: {
+                        profileVisibility: 'public',
+                        showOnlineStatus: true,
+                        allowFriendRequests: true,
+                        allowMessagesFrom: 'everyone'
+                    }
+                };
+            });
+            
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+        }
+        
+        // ИНИЦИАЛИЗАЦИЯ
+        function initApp() {
+            console.log('Инициализация приложения');
+            document.getElementById('debug').textContent = 'Инициализация...';
+            
+            // Загрузка данных
+            const usersData = localStorage.getItem('connectflow_users');
+            if (usersData) {
+                allUsers = JSON.parse(usersData);
+            } else {
+                createDemoUsers();
+            }
+            
+            // Проверка авторизации
+            const userData = localStorage.getItem('connectflow_current_user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                showApp();
+            }
+            
+            initAuthEvents();
+            initNavigationEvents();
+            document.getElementById('debug').textContent = 'Приложение готово';
+        }
+        
+        // АВТОРИЗАЦИЯ
+        function initAuthEvents() {
+            // Переключение вкладок
+            document.querySelectorAll('.auth-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.auth-form').forEach(form => {
+                        form.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-form`).classList.add('active');
+                });
+            });
+            
+            // Переход между формами
+            document.getElementById('go-to-register')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.auth-tab[data-tab="register"]').click();
+            });
+            
+            document.getElementById('go-to-login')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.auth-tab[data-tab="login"]').click();
+            });
+            
+            // Форма входа
+            document.getElementById('login-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                loginUser();
+            });
+            
+            // Форма регистрации
+            document.getElementById('register-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                registerUser();
+            });
+        }
+        
+        function loginUser() {
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            const user = allUsers[username];
+            
+            if (!user || user.password !== password) {
+                showNotification('Неверный юзернейм или пароль', 'error');
+                return;
+            }
+            
+            currentUser = user;
+            localStorage.setItem('connectflow_current_user', JSON.stringify(currentUser));
+            showApp();
+            showNotification('Успешный вход!', 'success');
+        }
+        
+        function registerUser() {
+            const name = document.getElementById('register-name').value.trim();
+            const username = document.getElementById('register-username').value.trim().toLowerCase();
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            
+            if (!name || name.length < 2) {
+                showNotification('Введите имя (минимум 2 символа)', 'error');
+                return;
+            }
+            
+            if (!username || username.length < 3) {
+                showNotification('Юзернейм должен быть от 3 символов', 'error');
+                return;
+            }
+            
+            if (allUsers[username]) {
+                showNotification('Этот юзернейм уже занят', 'error');
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                showNotification('Пароль должен быть от 6 символов', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            // Создание пользователя
+            allUsers[username] = {
+                name,
+                username,
+                password,
+                bio: `${name} пользуется ConnectFlow`,
+                avatar: name.charAt(0),
+                friends: [],
+                friendRequests: [],
+                sentRequests: [],
+                privacySettings: {
+                    profileVisibility: 'public',
+                    showOnlineStatus: true,
+                    allowFriendRequests: true,
+                    allowMessagesFrom: 'everyone'
+                }
+            };
+            
+            currentUser = allUsers[username];
+            localStorage.setItem('connectflow_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+            
+            showApp();
+            showNotification('Добро пожаловать в ConnectFlow!', 'success');
+        }
+        
+        // ПОКАЗАТЬ ПРИЛОЖЕНИЕ
+        function showApp() {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'flex';
+            updateUserInterface();
+        }
+        
+        function updateUserInterface() {
+            if (!currentUser) return;
+            
+            document.getElementById('current-user-name').textContent = currentUser.name;
+            document.getElementById('current-user-username').textContent = '@' + currentUser.username;
+            document.getElementById('current-user-avatar').textContent = currentUser.avatar;
+            
+            // Обновляем поля в настройках
+            const profileName = document.getElementById('profile-name');
+            const profileUsername = document.getElementById('profile-username');
+            const profileBio = document.getElementById('profile-bio');
+            
+            if (profileName) profileName.value = currentUser.name;
+            if (profileUsername) profileUsername.value = currentUser.username;
+            if (profileBio) profileBio.value = currentUser.bio || '';
+            
+            // Настройки приватности
+            if (currentUser.privacySettings) {
+                const privacyProfile = document.getElementById('privacy-profile');
+                const privacyOnline = document.getElementById('privacy-online');
+                const privacyFriendRequests = document.getElementById('privacy-friend-requests');
+                const privacyMessages = document.getElementById('privacy-messages');
                 
-                <div class="search-results" id="chat-search-results" style="max-height: 300px; overflow-y: auto;">
-                    <!-- Результаты поиска -->
-                </div>
-            </div>
-        </div>
-    </div>
+                if (privacyProfile) privacyProfile.value = currentUser.privacySettings.profileVisibility || 'public';
+                if (privacyOnline) privacyOnline.checked = currentUser.privacySettings.showOnlineStatus !== false;
+                if (privacyFriendRequests) privacyFriendRequests.checked = currentUser.privacySettings.allowFriendRequests !== false;
+                if (privacyMessages) privacyMessages.value = currentUser.privacySettings.allowMessagesFrom || 'everyone';
+            }
+        }
+        
+        // НАВИГАЦИЯ
+        function initNavigationEvents() {
+            // Переключение страниц
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    
+                    document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    loadPage(page);
+                });
+            });
+            
+            // Переключение вкладок друзей
+            document.querySelectorAll('.friends-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    document.querySelectorAll('.friends-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.friends-tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Переключение разделов настроек
+            document.querySelectorAll('.settings-nav-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.dataset.section;
+                    
+                    document.querySelectorAll('.settings-nav-item').forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.querySelectorAll('.settings-section').forEach(sec => {
+                        sec.classList.remove('active');
+                    });
+                    document.getElementById(`${section}-section`).classList.add('active');
+                });
+            });
+            
+            // Кнопка выхода
+            document.getElementById('logout-btn')?.addEventListener('click', function(e) {
+                e.preventDefault();
+                logout();
+            });
+            
+            // Кнопки верхней панели
+            document.getElementById('search-toggle')?.addEventListener('click', function() {
+                const searchBox = document.getElementById('chats-search-box');
+                searchBox.style.display = searchBox.style.display === 'none' ? 'block' : 'none';
+            });
+            
+            // Сохранение профиля
+            document.getElementById('profile-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveProfile();
+            });
+            
+            // Сохранение приватности
+            document.getElementById('save-privacy')?.addEventListener('click', function() {
+                savePrivacySettings();
+            });
+            
+            // Изменение пароля
+            document.getElementById('security-form')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                changePassword();
+            });
+        }
+        
+        function loadPage(page) {
+            // Обновляем заголовок
+            const titles = {
+                'chats': 'Чаты',
+                'contacts': 'Контакты',
+                'friends': 'Друзья',
+                'settings': 'Настройки'
+            };
+            document.getElementById('page-title').textContent = titles[page];
+            
+            // Скрываем все страницы
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            // Показываем нужную страницу
+            document.getElementById(`${page}-page`).classList.add('active');
+            
+            // Загружаем контент страницы
+            if (page === 'contacts') {
+                loadUsersToAdd();
+            }
+        }
+        
+        // ПОИСК И КОНТАКТЫ
+        function loadUsersToAdd() {
+            const container = document.getElementById('users-list');
+            if (!container) return;
+            
+            // Фильтруем пользователей
+            const filteredUsers = Object.values(allUsers).filter(user => 
+                user.username !== currentUser.username && 
+                !currentUser.friends.includes(user.username)
+            );
+            
+            if (filteredUsers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <h3>Нет пользователей</h3>
+                        <p>Все пользователи уже в ваших контактах</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            filteredUsers.forEach(user => {
+                const isRequestSent = currentUser.sentRequests.includes(user.username);
+                const hasRequest = user.friendRequests.includes(currentUser.username);
+                
+                let buttonText = 'Добавить в друзья';
+                let buttonClass = 'btn-primary';
+                let buttonDisabled = false;
+                
+                if (isRequestSent) {
+                    buttonText = 'Заявка отправлена';
+                    buttonClass = 'btn-outline';
+                    buttonDisabled = true;
+                } else if (hasRequest) {
+                    buttonText = 'Принять заявку';
+                    buttonClass = 'btn-success';
+                }
+                
+                html += `
+                    <div class="contact-card">
+                        <div class="contact-card-header">
+                            <div class="user-avatar">
+                                ${user.avatar}
+                            </div>
+                            <div class="contact-info">
+                                <div class="contact-name">${user.name}</div>
+                                <div class="contact-username">@${user.username}</div>
+                                <div class="contact-status">${user.bio || 'Нет описания'}</div>
+                            </div>
+                        </div>
+                        <div class="contact-actions">
+                            <button class="btn ${buttonClass}" onclick="sendFriendRequest('${user.username}')" ${buttonDisabled ? 'disabled' : ''}>
+                                ${buttonText}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        window.sendFriendRequest = function(username) {
+            const toUser = allUsers[username];
+            if (!toUser) return;
+            
+            // Проверяем настройки приватности
+            if (toUser.privacySettings && !toUser.privacySettings.allowFriendRequests) {
+                showNotification('Пользователь запретил заявки в друзья', 'error');
+                return;
+            }
+            
+            // Добавляем в отправленные заявки
+            if (!currentUser.sentRequests.includes(username)) {
+                currentUser.sentRequests.push(username);
+            }
+            
+            // Добавляем во входящие заявки получателя
+            if (!toUser.friendRequests.includes(currentUser.username)) {
+                toUser.friendRequests.push(currentUser.username);
+            }
+            
+            // Сохраняем
+            allUsers[currentUser.username] = currentUser;
+            allUsers[username] = toUser;
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+            
+            showNotification(`Заявка отправлена @${username}`, 'success');
+            loadUsersToAdd();
+        };
+        
+        // НАСТРОЙКИ
+        function saveProfile() {
+            const name = document.getElementById('profile-name').value.trim();
+            const username = document.getElementById('profile-username').value.trim().toLowerCase();
+            const bio = document.getElementById('profile-bio').value.trim();
+            
+            if (!name) {
+                showNotification('Введите имя', 'error');
+                return;
+            }
+            
+            if (!username) {
+                showNotification('Введите юзернейм', 'error');
+                return;
+            }
+            
+            // Проверяем юзернейм
+            if (username !== currentUser.username && allUsers[username]) {
+                showNotification('Этот юзернейм уже занят', 'error');
+                return;
+            }
+            
+            // Обновляем данные
+            currentUser.name = name;
+            currentUser.username = username;
+            currentUser.bio = bio;
+            currentUser.avatar = name.charAt(0);
+            
+            // Если юзернейм изменился
+            if (username !== currentUser.username) {
+                delete allUsers[currentUser.username];
+                currentUser.username = username;
+            }
+            
+            allUsers[username] = currentUser;
+            
+            localStorage.setItem('connectflow_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+            
+            updateUserInterface();
+            showNotification('Профиль обновлен', 'success');
+        }
+        
+        function savePrivacySettings() {
+            const profileVisibility = document.getElementById('privacy-profile').value;
+            const showOnlineStatus = document.getElementById('privacy-online').checked;
+            const allowFriendRequests = document.getElementById('privacy-friend-requests').checked;
+            const allowMessagesFrom = document.getElementById('privacy-messages').value;
+            
+            currentUser.privacySettings = {
+                profileVisibility,
+                showOnlineStatus,
+                allowFriendRequests,
+                allowMessagesFrom
+            };
+            
+            allUsers[currentUser.username] = currentUser;
+            localStorage.setItem('connectflow_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+            
+            showNotification('Настройки приватности сохранены', 'success');
+        }
+        
+        function changePassword() {
+            const currentPass = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            
+            if (!currentPass) {
+                showNotification('Введите текущий пароль', 'error');
+                return;
+            }
+            
+            if (currentPass !== currentUser.password) {
+                showNotification('Текущий пароль неверен', 'error');
+                return;
+            }
+            
+            if (!newPass) {
+                showNotification('Введите новый пароль', 'error');
+                return;
+            }
+            
+            if (newPass.length < 6) {
+                showNotification('Новый пароль должен быть не менее 6 символов', 'error');
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                showNotification('Пароли не совпадают', 'error');
+                return;
+            }
+            
+            currentUser.password = newPass;
+            allUsers[currentUser.username] = currentUser;
+            
+            localStorage.setItem('connectflow_current_user', JSON.stringify(currentUser));
+            localStorage.setItem('connectflow_users', JSON.stringify(allUsers));
+            
+            document.getElementById('security-form').reset();
+            showNotification('Пароль успешно изменен', 'success');
+        }
+        
+        // ВЫХОД
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('connectflow_current_user');
+            
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            
+            // Сбрасываем формы
+            document.getElementById('login-form').reset();
+            document.getElementById('register-form').reset();
+            document.querySelector('.auth-tab[data-tab="login"]').click();
+            
+            showNotification('Вы вышли из аккаунта', 'info');
+        }
+        
+        // УТИЛИТЫ
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container') || document.body;
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                                 type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            if (type === 'error') {
+                notification.style.borderLeftColor = '#ef4444';
+            } else if (type === 'success') {
+                notification.style.borderLeftColor = '#10b981';
+            }
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // ЗАГРУЗКА ПРИЛОЖЕНИЯ
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
 
-    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ПОЛЬЗОВАТЕЛЯ -->
-    <div class="modal-overlay" id="user-profile-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title" id="profile-modal-title">Профиль</div>
-                <button class="modal-close" id="close-profile-modal">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id="profile-modal-content">
-                    <!-- Содержимое профиля -->
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
+    <!-- ДОБАВИМ БАЗОВЫЕ СТИЛИ ДЛЯ УВЕДОМЛЕНИЙ И КНОПОК -->
+    <style>
+        /* Базовые стили для уведомлений */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #6366f1;
+            animation: slideIn 0.3s ease;
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .notification i {
+            font-size: 18px;
+        }
+        
+        /* Базовые стили для кнопок */
+        .auth-btn, .btn {
+            cursor: pointer !important;
+            pointer-events: auto !important;
+        }
+        
+        .auth-btn:hover, .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+        
+        .auth-btn:active, .btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Убираем отладочные стили при клике */
+        *:active {
+            outline: none !important;
+        }
+        
+        /* Стили для контейнера приложения */
+        .auth-container, .app-container {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        
+        /* Стили для навигации */
+        .nav-item, .auth-tab {
+            cursor: pointer !important;
+        }
+        
+        /* Стили для форм */
+        .form-input:focus {
+            outline: 2px solid #6366f1 !important;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .auth-box {
+                padding: 24px !important;
+                margin: 16px !important;
+            }
+            
+            .notification {
+                left: 20px;
+                right: 20px;
+            }
+        }
+    </style>
 </body>
 </html>
