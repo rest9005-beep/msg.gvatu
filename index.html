@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectFlow — Рабочий мессенджер</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- СТРАНИЦА АВТОРИЗАЦИИ -->
+    <div class="auth-container" id="auth-container">
+        <div class="auth-box">
+            <div class="auth-logo">Connect<span>Flow</span></div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" data-tab="login">Вход</div>
+                <div class="auth-tab" data-tab="register">Регистрация</div>
+            </div>
+
+            <!-- ФОРМА ВХОДА -->
+            <form class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> Юзернейм</label>
+                    <input type="text" class="form-input" id="login-username" 
+                           placeholder="Введите юзернейм" required>
+                    <div class="form-error" id="login-username-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> Пароль</label>
+                    <input type="password" class="form-input" id="login-password" 
+                           placeholder="Введите пароль" required>
+                    <div class="form-error" id="login-password-error"></div>
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-sign-in-alt"></i> Войти в аккаунт
+                </button>
+                
+                <div class="auth-link">
+                    Нет аккаунта? <a href="#" id="go-to-register">Зарегистрироваться</a>
+                </div>
+            </form>
+
+            <!-- ФОРМА РЕГИСТРАЦИИ -->
+            <form class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-user"></i> Полное имя</label>
+                    <input type="text" class="form-input" id="register-name" 
+                           placeholder="Иван Иванов" required>
+                    <div class="form-error" id="register-name-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-at"></i> Юзернейм</label>
+                    <input type="text" class="form-input" id="register-username" 
+                           placeholder="ivan.ivanov" required>
+                    <div class="form-error" id="register-username-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> Пароль</label>
+                    <input type="password" class="form-input" id="register-password" 
+                           placeholder="Минимум 6 символов" required>
+                    <div class="form-error" id="register-password-error"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-lock"></i> Подтвердите пароль</label>
+                    <input type="password" class="form-input" id="register-confirm" 
+                           placeholder="Повторите пароль" required>
+                    <div class="form-error" id="register-confirm-error"></div>
+                </div>
+                
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-user-plus"></i> Создать аккаунт
+                </button>
+                
+                <div class="auth-link">
+                    Есть аккаунт? <a href="#" id="go-to-login">Войти</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ОСНОВНОЕ ПРИЛОЖЕНИЕ -->
+    <div class="app-container" id="app-container">
+        <div class="app-content">
+            <!-- ЛЕВАЯ ПАНЕЛЬ -->
+            <div class="left-nav">
+                <div class="nav-header">
+                    <div class="nav-logo">Connect<span>Flow</span></div>
+                </div>
+                
+                <div class="nav-user">
+                    <div class="user-profile">
+                        <div class="user-avatar editable" id="current-user-avatar">
+                            <label for="avatar-upload-main" class="avatar-upload-label">
+                                <i class="fas fa-user"></i>
+                            </label>
+                            <input type="file" id="avatar-upload-main" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="user-info">
+                            <div class="user-name" id="current-user-name">Загрузка...</div>
+                            <div class="user-username" id="current-user-username">@username</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-items">
+                    <a href="#" class="nav-item active" data-page="chats">
+                        <i class="fas fa-comment"></i>
+                        <span>Чаты</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="contacts">
+                        <i class="fas fa-address-book"></i>
+                        <span>Контакты</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="friends">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Друзья</span>
+                    </a>
+                    <a href="#" class="nav-item" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Настройки</span>
+                    </a>
+                </div>
+                
+                <div class="nav-footer">
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Выйти</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ОСНОВНОЙ КОНТЕНТ -->
+            <div class="main-content">
+                <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+                <div class="top-bar">
+                    <div class="page-title" id="page-title">Чаты</div>
+                    <div class="top-actions">
+                        <button class="top-action-btn" id="search-toggle">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="top-action-btn" id="new-chat-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                        <button class="top-action-btn" id="notifications-btn">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ОБЛАСТЬ КОНТЕНТА -->
+                <div class="content-area">
+                    <!-- СТРАНИЦА ЧАТОВ -->
+                    <div class="page active" id="chats-page">
+                        <div class="search-box" id="chats-search-box" style="display: none;">
+                            <input type="text" class="search-input" id="chats-search" 
+                                   placeholder="Поиск чатов..." data-search-type="chats">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        <div class="chats-grid" id="chats-list">
+                            <!-- Чаты будут загружаться динамически -->
+                        </div>
+                    </div>
+
+                    <!-- СТРАНИЦА КОНТАКТОВ -->
+                    <div class="page" id="contacts-page">
+                        <div class="search-box">
+                            <input type="text" class="search-input" id="contacts-search" 
+                                   placeholder="Поиск по имени или юзернейму..." data-search-type="contacts">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        
+                        <div class="contacts-section">
+                            <div class="section-title">Мои контакты</div>
+                            <div class="contacts-list" id="contacts-list">
+                                <!-- Контакты будут загружаться динамически -->
+                            </div>
+                        </div>
+                        
+                        <div class="contacts-section">
+                            <div class="section-title">Найти пользователей</div>
+                            <div class="contacts-list" id="users-list">
+                                <!-- Пользователи для добавления -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- СТРАНИЦА ДРУЗЕЙ -->
+                    <div class="page" id="friends-page">
+                        <div class="friends-tabs">
+                            <div class="friends-tab active" data-tab="requests">Заявки</div>
+                            <div class="friends-tab" data-tab="friends">Друзья</div>
+                            <div class="friends-tab" data-tab="sent">Отправленные</div>
+                        </div>
+                        
+                        <div class="friends-content">
+                            <!-- ВКЛАДКА ЗАЯВОК -->
+                            <div class="friends-tab-content active" id="requests-tab">
+                                <div class="requests-list" id="requests-list">
+                                    <!-- Заявки будут загружаться динамически -->
+                                </div>
+                            </div>
+                            
+                            <!-- ВКЛАДКА ДРУЗЕЙ -->
+                            <div class="friends-tab-content" id="friends-tab">
+                                <div class="contacts-list" id="friends-list">
+                                    <!-- Друзья будут загружаться динамически -->
+                                </div>
+                            </div>
+                            
+                            <!-- ВКЛАДКА ОТПРАВЛЕННЫХ -->
+                            <div class="friends-tab-content" id="sent-tab">
+                                <div class="requests-list" id="sent-requests-list">
+                                    <!-- Отправленные заявки -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- СТРАНИЦА НАСТРОЕК -->
+                    <div class="page" id="settings-page">
+                        <div class="settings-grid">
+                            <div class="settings-nav">
+                                <a href="#" class="settings-nav-item active" data-section="profile">
+                                    <i class="fas fa-user"></i>
+                                    <span>Профиль</span>
+                                </a>
+                                <a href="#" class="settings-nav-item" data-section="avatar">
+                                    <i class="fas fa-image"></i>
+                                    <span>Аватар</span>
+                                </a>
+                                <a href="#" class="settings-nav-item" data-section="privacy">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Приватность</span>
+                                </a>
+                                <a href="#" class="settings-nav-item" data-section="security">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <span>Безопасность</span>
+                                </a>
+                                <a href="#" class="settings-nav-item" data-section="notifications">
+                                    <i class="fas fa-bell"></i>
+                                    <span>Уведомления</span>
+                                </a>
+                                <a href="#" class="settings-nav-item" data-section="appearance">
+                                    <i class="fas fa-palette"></i>
+                                    <span>Внешний вид</span>
+                                </a>
+                            </div>
+                            
+                            <div class="settings-content">
+                                <!-- РАЗДЕЛ ПРОФИЛЯ -->
+                                <div class="settings-section active" id="profile-section">
+                                    <div class="settings-title">Профиль</div>
+                                    <form class="settings-form" id="profile-form">
+                                        <div class="form-group">
+                                            <label class="form-label">Полное имя</label>
+                                            <input type="text" class="form-input" id="profile-name" 
+                                                   placeholder="Введите ваше имя" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Юзернейм</label>
+                                            <input type="text" class="form-input" id="profile-username" 
+                                                   placeholder="@username" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">О себе</label>
+                                            <textarea class="form-input" id="profile-bio" 
+                                                      placeholder="Расскажите о себе" rows="4"></textarea>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Сохранить изменения
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- РАЗДЕЛ АВАТАРА -->
+                                <div class="settings-section" id="avatar-section">
+                                    <div class="settings-title">Аватар</div>
+                                    <div class="avatar-upload" id="avatar-upload-container">
+                                        <label for="avatar-upload" class="avatar-upload-label">
+                                            <div class="avatar-preview" id="avatar-preview">
+                                                <!-- Превью аватара -->
+                                            </div>
+                                            <i class="fas fa-cloud-upload-alt"></i>
+                                            <span>Нажмите для загрузки аватара</span>
+                                            <small>Поддерживаемые форматы: JPG, PNG (макс. 5MB)</small>
+                                        </label>
+                                        <input type="file" id="avatar-upload" accept="image/*">
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-danger" id="remove-avatar">
+                                            <i class="fas fa-trash"></i> Удалить аватар
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <!-- РАЗДЕЛ ПРИВАТНОСТИ -->
+                                <div class="settings-section" id="privacy-section">
+                                    <div class="settings-title">Приватность</div>
+                                    <form class="settings-form" id="privacy-form">
+                                        <div class="form-group">
+                                            <label class="form-label">Видимость профиля</label>
+                                            <select class="form-input" id="privacy-profile">
+                                                <option value="public">Публичный (видят все)</option>
+                                                <option value="friends">Только друзья</option>
+                                                <option value="private">Приватный (никто не видит)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Показывать статус онлайн</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="privacy-online">
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Разрешать заявки в друзья</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="privacy-friend-requests">
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Кто может писать сообщения</label>
+                                            <select class="form-input" id="privacy-messages">
+                                                <option value="everyone">Все пользователи</option>
+                                                <option value="friends">Только друзья</option>
+                                                <option value="nobody">Никто</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Показывать время последнего посещения</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="privacy-last-seen">
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-primary" onclick="savePrivacySettings()">
+                                            <i class="fas fa-lock"></i> Сохранить настройки приватности
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- РАЗДЕЛ БЕЗОПАСНОСТИ -->
+                                <div class="settings-section" id="security-section">
+                                    <div class="settings-title">Безопасность</div>
+                                    <form class="settings-form" id="security-form">
+                                        <div class="form-group">
+                                            <label class="form-label">Текущий пароль</label>
+                                            <input type="password" class="form-input" id="current-password" 
+                                                   placeholder="Введите текущий пароль" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Новый пароль</label>
+                                            <input type="password" class="form-input" id="new-password" 
+                                                   placeholder="Введите новый пароль" required>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">Подтвердите пароль</label>
+                                            <input type="password" class="form-input" id="confirm-password" 
+                                                   placeholder="Повторите новый пароль" required>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key"></i> Изменить пароль
+                                        </button>
+                                    </form>
+                                </div>
+                                
+                                <!-- ОСТАЛЬНЫЕ РАЗДЕЛЫ -->
+                                <div class="settings-section" id="notifications-section">
+                                    <div class="settings-title">Уведомления</div>
+                                    <form class="settings-form">
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Уведомления о сообщениях</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="notify-messages" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Уведомления о заявках в друзья</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="notify-friend-requests" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Звуковые уведомления</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="notify-sounds" checked>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+                                
+                                <div class="settings-section" id="appearance-section">
+                                    <div class="settings-title">Внешний вид</div>
+                                    <form class="settings-form">
+                                        <div class="form-group">
+                                            <label class="form-label">Тема оформления</label>
+                                            <select class="form-input" id="theme-select">
+                                                <option value="dark">Темная</option>
+                                                <option value="light">Светлая</option>
+                                                <option value="auto">Авто (системная)</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label class="form-label">
+                                                <span>Компактный режим</span>
+                                                <label class="switch">
+                                                    <input type="checkbox" id="compact-mode">
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </label>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Применить настройки
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО НОВОГО ЧАТА -->
+    <div class="modal-overlay" id="new-chat-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Новый чат</div>
+                <button class="modal-close" id="close-new-chat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Выберите пользователя</label>
+                    <input type="text" class="form-input" id="chat-user-search" 
+                           placeholder="Поиск по имени или юзернейму">
+                </div>
+                
+                <div class="search-results" id="chat-search-results" style="max-height: 300px; overflow-y: auto;">
+                    <!-- Результаты поиска -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПРОФИЛЯ ПОЛЬЗОВАТЕЛЯ -->
+    <div class="modal-overlay" id="user-profile-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="profile-modal-title">Профиль</div>
+                <button class="modal-close" id="close-profile-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="profile-modal-content">
+                    <!-- Содержимое профиля -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
